@@ -303,6 +303,8 @@ config("compiler") {
     } else {
       cflags += [
         "-Wno-builtin-macro-redefined",
+        "-Wno-implicit-function-declaration",
+        #"-Wno-unknown-argument",
         "-D__DATE__=",
         "-D__TIME__=",
         "-D__TIMESTAMP__=",
@@ -1453,6 +1455,7 @@ config("default_warnings") {
       # Disables.
       "-Wno-missing-field-initializers",  # "struct foo f = {0};"
       "-Wno-unused-parameter",  # Unused function parameters.
+      "-Wno-implicit-function-declaration",
     ]
   }
 
@@ -1716,7 +1719,7 @@ config("exceptions") {
     if (!use_custom_libcxx) {
       defines = [ "_HAS_EXCEPTIONS=1" ]
     }
-    cflags_cc = [ "/EHsc" ]
+    cflags_cc = [ "/EHs-c-" ]
   } else {
     cflags_cc = [ "-fexceptions" ]
     cflags_objcc = cflags_cc
@@ -2196,7 +2199,7 @@ config("symbols") {
   if (is_win) {
     if (use_goma || is_clang) {
       # Note that with VC++ this requires is_win_fastlink, enforced elsewhere.
-      cflags = [ "/Z7" ]  # Debug information in the .obj files.
+      cflags = [] #[ "/Z7" ]  # Debug information in the .obj files.
     } else {
       if (is_clang) {
         cflags = [ "" ]
