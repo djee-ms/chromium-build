@@ -168,7 +168,10 @@ class WinTool(object):
   def ExecAsmWrapper(self, arch, *args):
     """Filter logo banner from invocations of asm.exe."""
     env = self._GetEnv(arch)
-    popen = subprocess.Popen(args, shell=True, env=env,
+    command = list(args)
+    executablePath = self._ConvertToPlatformPath(args[0])
+    command[0] = executablePath
+    popen = subprocess.Popen(command, shell=True, env=env,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     out, _ = popen.communicate()
     for line in out.splitlines():
@@ -247,6 +250,20 @@ class WinTool(object):
     dirname = dirname[0] if dirname else None
     return subprocess.call(args, shell=True, env=env, cwd=dirname)
 
-
+  def _ConvertToPlatformPath(self, path):
+    listOfString = []
+    if '/' in path:
+      listOfString = path.split('/')
+    elif '\\\\' in path:
+      listOfString = path.split('\\\\')
+    elif '\\' in path:
+      listOfString = path.split('\\')
+    if len(listOfString) > 0:
+      #For win it is necessary to add \\ for drive letter
+      if ':' in listOfString[0]:
+        listOfString[0] = listOfString[0] + os.sep
+      return os.path.join(*listOfString)
+    return path
+  
 if __name__ == '__main__':
   sys.exit(main(sys.argv[1:]))
