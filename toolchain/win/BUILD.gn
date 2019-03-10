@@ -251,7 +251,7 @@ template("msvc_toolchain") {
         }
       } else {
         #ml = "$env_wrapper$cl --target=arm-pc-windows -arm-implicit-it=always"
-        ml = "$env_wrapper$cl --target=arm-pc-windows -arm-implicit-it=always"
+        ml = "$env_wrapper$cl --target=arm-pc-windows"
       }
       
       #if (is_clang) {
